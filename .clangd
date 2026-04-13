@@ -1,0 +1,64 @@
+CompileFlags:
+    Compiler: clang++
+    CompilationDatabase: build/
+    Add:
+        - -std=c++17
+        - -I/u/yuxihong/workspace/local/cuda-12.8/targets/x86_64-linux/include
+        - -I/data/project/yuxilab/yuxihong/workspace/code/mcl/sc26mcl/opsparse/include
+
+Diagnostics:
+  Suppress:
+    - "pp_including_mainfile_in_preamble"
+    - "builtin_definition"
+    - "unused-includes"
+    - "typecheck_member_reference_suggestion"
+    - "typecheck_incomplete_tag"
+
+---
+
+# CUDA files: strip nvcc flags that clangd doesn't understand
+If:
+    PathMatch: .*\.cuh?$
+CompileFlags:
+    Add:
+        - -xcuda
+        - --cuda-path=/u/yuxihong/workspace/local/cuda-12.8
+        - --cuda-gpu-arch=sm_80
+    Remove:
+        - "-Xfatbin*"
+        - "-gencode*"
+        - "--generate-code*"
+        - "-ccbin*"
+        - "--compiler-options*"
+        - "--expt-extended-lambda"
+        - "--expt-relaxed-constexpr"
+        - "-forward-unknown-to-host-compiler"
+        - "-Werror=cross-execution-space-call"
+        - "--options-file"
+        - "-Xcompiler=*"
+        - "-Xcudafe"
+        - "--diag-suppress=1650"
+        - "--diag-suppress=128"
+        - "-compress-all"
+        - "--threads"
+
+---
+
+# C/C++ files: strip nvcc flags that leak through
+If:
+    PathMatch: .*\.(c|h|cpp|hpp)$
+CompileFlags:
+    Remove:
+        - "-Xfatbin*"
+        - "-gencode*"
+        - "--generate-code*"
+        - "-ccbin*"
+        - "--compiler-options*"
+        - "--expt-extended-lambda"
+        - "--expt-relaxed-constexpr"
+        - "-forward-unknown-to-host-compiler"
+        - "-Werror=cross-execution-space-call"
+        - "--options-file"
+        - "-Xcompiler=*"
+        - "-frerun-loop-opt"
+        - "-fabi-compat-version=2"

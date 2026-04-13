@@ -3,3 +3,18 @@
 *.o
 *.obj
 *.out
+build/
+build-*/
+*.a
+*.so
+*.dylib
+.cache/
+.vscode/
+.idea/
+compile_commands.json
+matrix/
+
+# experiment_results: whitelist only the README and matrix lists.
+experiment_results/*
+!experiment_results/README.md
+!experiment_results/matrix_lists/
